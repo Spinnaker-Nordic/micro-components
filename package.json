@@ -19,5 +19,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.0.0",
     "typescript": "*"
+  },
+  "dependencies": {
+    "mitt": "^3.0.0"
   }
 }
