@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "Microframework for mounting code on top of DOM elements",
   "main": "lib/index.js",
-  "repository": "https://github.com/Spinnaker-Nordic/micro-components.git",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Spinnaker-Nordic/micro-components.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Spinnaker-Nordic/micro-components/issues"
+  },
   "homepage": "https://spinnakernordic.com/",
   "license": "MIT",
   "scripts": {
