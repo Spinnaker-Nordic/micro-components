@@ -1,8 +1,6 @@
-# Components
+# Micro-components
 
-### What is Components?
-
-Components is a microframework meant to mount code on top of a DOM element. Components encourage lazyloading of all modules by utilizating events to load the components. However, you are not locked into this behaivor.
+Micro-components is a lightweight framework that allows code to be mounted on DOM elements.
 
 ## Installation
 
@@ -10,9 +8,9 @@ Components is a microframework meant to mount code on top of a DOM element. Comp
 $ yarn add @spinnakernordic/micro-components
 ```
 
-## Usage
+## Components
 
-First you have to create a new component.
+### Creating a component
 
 ```typescript
 import type { ComponentType } from '@spinnakernordic/micro-components';
@@ -26,44 +24,40 @@ const Component: ComponentType = (node, { app, emitter }) => {
 export default Component;
 ```
 
-Then you have to register your component.
+### Registering a component
 
 ```typescript
 import { App } from '@spinnakernordic/micro-components';
 
 const app = new App({
-  // Async (Recommended), loaded on element mouseenter event
+  // Asynchronous, loads component with custom loaders/event listeners
   'my-component': ['mouseenter', () => import('components/my-component')],
 
-  // Sync, loaded immediately
+  // Synchronous, loads component immediately
   'my-component': require('components/my-component'),
 });
 
 app.mount();
 ```
 
-Then you have to create the DOM elements.
+Create DOM element(s) with the attribute `data-component` containing the name of your component
 
 ```html
 <div data-component="my-component"></div>
 ```
 
-#### Creating custom loader
+## Creating custom loaders
 
-Sometimes default pointer events is not good enough to load your component. You may want to load it when it's visible the viewport, or when a certain event is emitted.
-
-To create a custom loader you will first have to create the loader.
+When default DOM events are not sufficient to load your component, you may want to create a custom loader.
 
 ```typescript
 import type { ComponentLoaderType } from '@spinnakernordic/micro-components';
 
 const Loader: ComponentLoaderType = ({ node, emitter }, load) => {
-  // Add a event.
-  // You can use `node` and `emitter` here.
+  // In this example we call load() on a custom event listener
   document.addEventListener('my-custom-event', load);
 
-  // Return a function which disconnects the listeners.
-  // This is useful when using multiple loaders.
+  // Return a function which disconnects the listener
   return () => {
     document.removeEventListener('my-custom-event', load);
   };
@@ -72,30 +66,38 @@ const Loader: ComponentLoaderType = ({ node, emitter }, load) => {
 export default Loader;
 ```
 
-Then you have to register the loader for the component.
+### Register the loader on a component
 
 ```typescript
-import myCustomLoader from 'loaders/my-custom-loader',
+import customLoader from 'loaders/custom-loader',
 
 const app = new App({
-  'my-component': [
-    myCustomLoader,
-    () => import('components/my-component'),
-  ],
+  'my-component': [customLoader, () => import('components/my-component')],
 });
+
+app.mount();
 ```
 
-#### Using multiple loaders
+### Using multiple loaders
 
-It's very easy to add multiple loaders. If you just use regular events emitted from the node itself, you can pass a string with these, or if you want to combine multiple custom loaders with regular events, you can use an array.
+It is very simple to add multiple loaders for a component.
+In cases where only regular events that are emitted from the node itself is used, you can pass a single string containing these.
+If you want to combine multiple custom loaders, you can use an array.
 
 ```typescript
-const app = new App({
-  'my-component': ['mouseenter click', () => import('components/my-component')],
+import customLoader from 'loaders/custom-loader',
+import otherCustomLoader from 'loaders/other-custom-loader',
 
+const app = new App({
+  // Multiple regular events
+  'my-component': ['mouseenter click', () => import('components/my-component')],
+  
+  // Combine multiple custom loaders
   'my-component': [
-    [myCustomLoader, myOtherCustomLoader, 'mouseenter'],
+    [customLoader, otherCustomLoader, 'mouseenter'],
     () => import('components/my-component'),
   ],
 });
+
+app.mount();
 ```
