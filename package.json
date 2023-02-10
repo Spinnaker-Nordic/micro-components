@@ -1,6 +1,6 @@
 {
   "name": "@spinnakernordic/micro-components",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Microframework for mounting code on top of DOM elements",
   "main": "lib/index.js",
   "repository": {
